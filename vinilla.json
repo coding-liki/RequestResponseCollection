@@ -1,0 +1,10 @@
+{
+    "name": "RequestResponseCollection",
+    "vendor": "CodingLiki",
+    "description": "Collection of some popular request->response patterns",
+    "version": "1.0",
+    "repo_url": "",
+    "depends_on": [
+        "CodingLiki/RequestResponseSystem"
+    ]
+}
