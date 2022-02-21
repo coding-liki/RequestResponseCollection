@@ -36,6 +36,9 @@ class Handler implements HandlerInterface
         $controller = $request->getController();
         $method = $request->getMethod();
 
+        if($request->isOptions()){
+            return new Response();
+        }
         if($controller !== null && $method !== null){
           return $controller->runMethod($method, $request);
         }

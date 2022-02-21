@@ -10,16 +10,17 @@ class ExceptionHandler extends BaseMiddleware
     {
         if($this->throwable !== null) {
             echo "\nWe have throwable `".$this->throwable::class."` \n";
+            echo "\n Message  `".$this->throwable->getMessage()."`\n";
             echo "in file ".$this->throwable->getFile(). " on line ".$this->throwable->getLine()."\n";
-            print_r($this->throwable->getTrace());
-
-            if($this->request !== null){
-                print_r($this->request);
-            }
-
-            if($this->response !== null){
-                print_r($this->response);
-            }
+//            print_r($this->throwable->getTrace());
+//
+//            if($this->request !== null){
+//                print_r($this->request);
+//            }
+//
+//            if($this->response !== null){
+//                print_r($this->response);
+//            }
         }
     }
 }

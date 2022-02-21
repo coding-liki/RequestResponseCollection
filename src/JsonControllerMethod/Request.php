@@ -15,6 +15,7 @@ class Request extends JsonRequest
     private ?ControllerInterface $controller = null;
     private ?string $method = null;
     private bool $parsed = false;
+    private bool $options = false;
 
     /**
      * @param StrategyInterface[] $strategies
@@ -30,7 +31,15 @@ class Request extends JsonRequest
 
     public function parseServerRequest()
     {
-        $parsedBody = json_decode($this->getServerRequest()->getBody(), true, 512, JSON_THROW_ON_ERROR);
+        try {
+            $parsedBody = json_decode($this->getServerRequest()->getBody(), true, 512, JSON_THROW_ON_ERROR);
+        } catch (JsonException $e) {
+            if($this->getServerRequest()->getMethod() !== 'OPTIONS') {
+                throw $e;
+            }
+            $parsedBody = [];
+            $this->options = true;
+        }
 
         $acceptedStrategy = null;
         foreach ($this->strategies as $strategy) {
@@ -47,9 +56,13 @@ class Request extends JsonRequest
         }
 
         if ($acceptedStrategy !== null) {
-            $acceptedStrategy->parseRequest();
-            if($this->checkControllerMethod()) {
-                $this->parsed = true;
+            try {
+                $acceptedStrategy->parseRequest();
+                if ($this->checkControllerMethod()) {
+                    $this->parsed = true;
+                }
+            } catch (\Throwable $e) {
+
             }
         }
     }
@@ -75,6 +88,14 @@ class Request extends JsonRequest
     private function checkControllerMethod(): bool
     {
         return $this->controller->checkMethod($this->method, $this);
+    }
+
+    /**
+     * @return bool
+     */
+    public function isOptions(): bool
+    {
+        return $this->options;
     }
 
 }

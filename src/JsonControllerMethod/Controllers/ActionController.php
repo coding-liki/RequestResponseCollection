@@ -23,7 +23,7 @@ abstract class ActionController extends SimpleController
     {
         try {
             return parent::runMethod($this->prepareMethodName($method), $request);
-        } catch (\Throwable $e){
+        } catch (MethodDoesNotExistsException $e){
             $actionClass = $this->getActions()[$method] ?? null;
             if($actionClass === null) {
                 throw new MethodDoesNotExistsException($method, static::class);
