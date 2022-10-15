@@ -2,7 +2,7 @@
     "name": "RequestResponseCollection",
     "vendor": "CodingLiki",
     "description": "Collection of some popular request->response patterns",
-    "version": "1.0",
+    "version": "1.1",
     "repo_url": "https://github.com/coding-liki/RequestResponseCollection",
     "depends_on": [
         "CodingLiki/RequestResponseSystem",
