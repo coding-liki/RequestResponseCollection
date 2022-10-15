@@ -24,7 +24,8 @@ class ObjectConverter
      */
     private function getArrayFromObject(object $object): array
     {
-        $refClass   = new \ReflectionClass($this->rootObject);
+//        $refClass   = new \ReflectionClass($this->rootObject);
+        $refClass   = new \ReflectionClass($object);
         $properties = $refClass->getProperties();
         $result     = [];
         foreach ($properties as $property) {
@@ -49,10 +50,20 @@ class ObjectConverter
 
         $value = $this->getObjectProperty($object, $property->getName(), $property->isPrivate());
 
-        if ($property->getType()->isBuiltin()) {
+        if($property->getType()->getName() === 'array'){
+            $result[$jsonPropertyName] = array_map(function ($child){
+                if(is_object($child)) {
+                    return (new ObjectConverter($child))->toArray();
+                }
+
+                return $child;
+            }, $value);
+        }
+        else
+            if ($property->getType()->isBuiltin()) {
             $result[$jsonPropertyName] = $value;
         } else {
-            $result[$jsonPropertyName] = $this->getArrayFromObject($value);
+            $result[$jsonPropertyName] = (new ObjectConverter($value))->toArray() ;
         }
     }
 
