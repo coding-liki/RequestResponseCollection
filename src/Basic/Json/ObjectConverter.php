@@ -25,9 +25,9 @@ class ObjectConverter
     private function getArrayFromObject(object $object): array
     {
 //        $refClass   = new \ReflectionClass($this->rootObject);
-        $refClass   = new \ReflectionClass($object);
+        $refClass = new \ReflectionClass($object);
         $properties = $refClass->getProperties();
-        $result     = [];
+        $result = [];
         foreach ($properties as $property) {
             $this->processProperty($object, $property, $result);
         }
@@ -46,24 +46,22 @@ class ObjectConverter
         }
         /** @var Json $attributeInstance */
         $attributeInstance = $attribute->newInstance();
-        $jsonPropertyName  = $attributeInstance->getName() ?? $property->getName() ;
+        $jsonPropertyName = $attributeInstance->getName() ?? $property->getName();
 
         $value = $this->getObjectProperty($object, $property->getName(), $property->isPrivate());
 
-        if($property->getType()->getName() === 'array'){
-            $result[$jsonPropertyName] = array_map(function ($child){
-                if(is_object($child)) {
+        if ($property->getType()->getName() === 'array') {
+            $result[$jsonPropertyName] = array_map(function ($child) {
+                if (is_object($child)) {
                     return (new ObjectConverter($child))->toArray();
                 }
 
                 return $child;
             }, $value);
-        }
-        else
-            if ($property->getType()->isBuiltin()) {
-            $result[$jsonPropertyName] = $value;
+        } else if (is_object($value)) {
+            $result[$jsonPropertyName] = (new ObjectConverter($value))->toArray();
         } else {
-            $result[$jsonPropertyName] = (new ObjectConverter($value))->toArray() ;
+            $result[$jsonPropertyName] = $value;
         }
     }
 
