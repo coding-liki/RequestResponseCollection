@@ -26,11 +26,11 @@ class MiddlewareFromAttributesReader
         $refClass = new \ReflectionClass($subject);
 
         $middlewareAttributes = $refClass->getAttributes(Middleware::class);
-        $middlewaresToAdd     = [];
+        $middlewaresToAdd = [];
         foreach ($middlewareAttributes as $attribute) {
             /** @var Middleware $instance */
-            $instance           = $attribute->newInstance();
-            $middlewareClass    = $instance->getMiddlewareClass();
+            $instance = $attribute->newInstance();
+            $middlewareClass = $instance->getMiddlewareClass();
             $middlewaresToAdd[] = new $middlewareClass(...$instance->getParams());
         }
 
@@ -53,7 +53,7 @@ class MiddlewareFromAttributesReader
 
     /**
      * @param object|string $subject
-     * @param array         $middlewaresToAdd
+     * @param array $middlewaresToAdd
      *
      * @return void
      */
