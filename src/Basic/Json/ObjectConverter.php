@@ -24,7 +24,6 @@ class ObjectConverter
      */
     private function getArrayFromObject(object $object): array
     {
-//        $refClass   = new \ReflectionClass($this->rootObject);
         $refClass = new \ReflectionClass($object);
         $properties = $refClass->getProperties();
         $result = [];
@@ -46,7 +45,15 @@ class ObjectConverter
         }
         /** @var Json $attributeInstance */
         $attributeInstance = $attribute->newInstance();
-        $jsonPropertyName = $attributeInstance->getName() ?? $property->getName();
+
+        // Check current Strategy.
+        if(method_exists($object, 'getJsonStrategy')){
+            $strategy = $object->getJsonStrategy();
+            if(!empty($attributeInstance->strategies) && !in_array($strategy, $attributeInstance->strategies)){
+                return;
+            }
+        }
+        $jsonPropertyName = $attributeInstance->name ?? $property->getName();
 
         $value = $this->getObjectProperty($object, $property->getName(), $property->isPrivate());
 
